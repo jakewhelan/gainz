@@ -4,7 +4,7 @@
   "description": "A website to see max cape colour configurations",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "lite-server"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/jakewhelan/gainz/issues"
   },
-  "homepage": "https://github.com/jakewhelan/gainz#readme"
+  "homepage": "https://github.com/jakewhelan/gainz#readme",
+  "devDependencies": {
+    "lite-server": "^2.4.0"
+  }
 }

@@ -5,11 +5,17 @@ const { resolve } = require('path')
 module.exports = {
   entry: {
     vue: 'vue',
-    index: resolve('./src/app.js')
+    index: resolve('./src/main.js')
   },
   output: {
     filename: '[name].js',
     path: resolve('dist')
+  },
+  resolve: {
+    alias: {
+      '@app': resolve(__dirname, 'src'),
+      '@core': resolve(__dirname, 'src/core')
+    }
   },
   mode: 'development',
   module: {

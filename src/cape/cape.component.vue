@@ -1,4 +1,8 @@
 <script>
+  import $store from '@app/app.store'
+
+  window.store=$store
+  
   export default {
     name: 'cape',
     data: () => ({
@@ -7,10 +11,10 @@
     computed: {
       canvasElements() {
         return {
-          detailTopElement: this.$refs.detailTop,
-          backgroundTopElement: this.$refs.bgTop,
-          detailBottomElement: this.$refs.detailBottom,
-          backgroundBottomElement: this.$refs.bgBottom,
+          topDetailElement: this.$refs.topDetail,
+          topBackgroundElement: this.$refs.topBg,
+          bottomDetailElement: this.$refs.bottomDetail,
+          bottomBackgroundElement: this.$refs.bottomBg,
           shadowDetailElement: this.$refs.shadowDetail,
           trimmedElement: this.$refs.trimmed,
           untrimmedElement: this.$refs.untrimmed
@@ -47,7 +51,6 @@
         const imageLayers = await Promise
           .all(canvasLayers)
           .then(canvasLayers => canvasLayers.reduce((acc, { key, context, image, element }) => {
-            console.log(image.id)
             if (image.id !== 'trimmed') context.drawImage(image, 0, 0)
 
             return {
@@ -71,8 +74,10 @@
         context.filter=`hue-rotate(${(hueRotate - sourceHue) | 0}deg)`;
         context.drawImage(image, 0, 0);
       },
-      async render () {
-        this.imageLayers = await this.drawInitialImages()
+      applyHue (hue, { context, image }) {
+        context.clearRect(0 , 0, 300, 450);
+        context.filter=`hue-rotate(${hue}deg)`;
+        context.drawImage(image, 0, 0);
       },
       capeOnClick () {
         Object.values(this.imageLayers).forEach(imageLayer => {
@@ -82,20 +87,40 @@
 
           this.applyRandomColour(imageLayer)
         })
+      },
+      subscribeToColourPickers () {
+        const colourPickers = [
+          'colourPicker/topDetail/SET_HUE',
+          'colourPicker/topBackground/SET_HUE',
+          'colourPicker/bottomDetail/SET_HUE',
+          'colourPicker/bottomBackground/SET_HUE'
+        ]
+
+        $store.subscribe(({ type, payload }) => {
+          if (colourPickers.includes(type)) {
+            const elementName = type.split('/')[1]
+            const { hue } = payload
+            this.applyHue(hue, this.imageLayers[`${elementName}Element`])
+          }
+        })
+      },
+      async render () {
+        this.imageLayers = await this.drawInitialImages()
       }
     },
     async mounted () {
       await this.render()
+      this.subscribeToColourPickers()
     },
   }
 </script>
 
 <template>
   <div @click="capeOnClick">
-    <canvas ref="detailTop" id="detail-top" width=300 height=450></canvas>
-    <canvas ref="bgTop" id="bg-top" width=300 height=450></canvas>
-    <canvas ref="detailBottom" id="detail-bottom" width=300 height=450></canvas>
-    <canvas ref="bgBottom" id="bg-bottom" width=300 height=450></canvas>
+    <canvas ref="topDetail" id="top-detail" width=300 height=450></canvas>
+    <canvas ref="topBg" id="top-bg" width=300 height=450></canvas>
+    <canvas ref="bottomDetail" id="bottom-detail" width=300 height=450></canvas>
+    <canvas ref="bottomBg" id="bottom-bg" width=300 height=450></canvas>
     <canvas ref="shadowDetail" id="shadow-detail" width=300 height=450></canvas>
     <canvas ref="trimmed" id="trimmed" width=300 height=450></canvas>
     <canvas ref="untrimmed" id="untrimmed" width=300 height=450></canvas>

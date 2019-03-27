@@ -10,32 +10,33 @@ export class ColourPickerModule extends CoreModule {
 
   get state() {
     return {
-      colour: '#ffffff'
+      hue: 0
     }
   }
 
-  get types () {
-    const SET_COLOUR = `${this.namespace}/SET_COLOUR`
-
-    return {
-      SET_COLOUR
-    }
+  get typeNames () {
+    return [
+      'SET_HUE'
+    ]
   }
 
   get actions () {
-    const { SET_COLOUR } = this.types
+    const { SET_HUE } = this.types.actions
 
     return {
-      setColour: ({ commit }, { colour }) => commit(SET_COLOUR, { colour })
+      setHue: ({ commit }, { hue }) => {
+        const { SET_HUE } = this.types.mutations
+        commit(SET_HUE, { hue })
+      }
     }
   }
 
   get mutations () {
-    const { SET_COLOUR } = this.types
+    const { SET_HUE } = this.types.mutations
   
     return {
-      [SET_COLOUR] (state, payload) {
-        state.colour = payload.colour
+      [SET_HUE] (state, payload) {
+        state.hue = payload.hue
       }
     }
   }

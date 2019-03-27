@@ -12,7 +12,7 @@ export class CoreModule {
   }
 
   register () {
-    if (this.parent && !this.$store.state[this.parent]) this.registerParent()
+    if (this.parent && !$store.state[this.parent]) this.registerParent()
 
     const { state, actions, mutations, namespaced } = this
 
@@ -50,8 +50,30 @@ export class CoreModule {
     ]
   }
 
+  createTypes (types) {
+    const accumulator = {
+      mutations: {}, 
+      actions: {}
+    }
+
+    return types.reduce((acc, cur) => ({
+      mutations: {
+        ...acc.mutations,
+        [cur]: `${cur}`
+      },
+      actions: {
+        ...acc.actions,
+        [cur]: `${this.namespace}/SET_HUE`
+      }
+    }), accumulator)
+  }
+
+  get typeNames () {
+    return []
+  }
+
   get types () {
-    return {}
+    return this.createTypes(this.typeNames)
   }
 
   get state () {
@@ -67,7 +89,7 @@ export class CoreModule {
   }
 
   get dispatchers () {
-    const { dispatch } = this.$store
+    const { dispatch } = $store
     return Object
       .keys(this.actions)
       .reduce((acc, cur) => {

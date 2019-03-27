@@ -7,12 +7,25 @@
     props: {
       name: String
     },
+    data: () => ({
+      hueInput: {
+        value: 0
+      }
+    }),
     computed: {
       state () {
         return store.state.colourPicker[this.namespace]
       },
-      colour () {
-        return this.state.colour
+      hue () {
+        return this.state.hue
+      }
+    },
+    methods: {
+      hueInputOnChange() {
+        const { setHue } = this.dispatchers
+        const { value: hue } = this.hueInput
+
+        setHue({ hue })
       }
     },
     beforeCreate() {
@@ -27,11 +40,21 @@
 
 <template>
   <div>
-    <input/>
-    {{ name }} |!| {{ namespace }} |!| {{ colour }}
+    <label>{{ name }}</label>
+    <input
+      v-model.number="hueInput.value"
+      @change="hueInputOnChange"
+      type="range" 
+      min=0
+      max=360
+    />
+    <div>hue: {{ hue }}</div>
+    <br/><br/>
   </div>
 </template>
 
 <style scoped lang="scss">
-
+  label {
+    display: block;
+  }
 </style>

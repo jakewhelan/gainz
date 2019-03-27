@@ -1,7 +1,5 @@
 <script>
   import $store from '@app/app.store'
-
-  window.store=$store
   
   export default {
     name: 'cape',

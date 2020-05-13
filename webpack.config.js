@@ -5,11 +5,18 @@ const { resolve } = require('path')
 module.exports = {
   entry: {
     vue: 'vue',
-    index: resolve('./src/app.js')
+    index: resolve('./src/main.js')
   },
   output: {
     filename: '[name].js',
     path: resolve('dist')
+  },
+  resolve: {
+    alias: {
+      '@assets': resolve(__dirname, 'assets'),
+      '@app': resolve(__dirname, 'src'),
+      '@core': resolve(__dirname, 'src/core')
+    }
   },
   mode: 'development',
   module: {
@@ -33,6 +40,10 @@ module.exports = {
           'css-loader',
           'sass-loader'
         ]
+      },
+      {
+        test: /\.(jpe?g|png|gif|woff|woff2|eot|ttf|svg)(\?[a-z0-9=.]+)?$/,
+        loader: 'url-loader?limit=100000' 
       }
     ]
   },
